@@ -1,97 +1,95 @@
-// JavaScript Document
+//acciones.js 
 $(document).ready(function(e) 
 {
     document.addEventListener("deviceready",function()
 	{
-		var db= openDatabase("Test", "1.0", "Base de prueba", 65535);
+		//se crea
+		var db = openDatabase ("Test", "1.0", "Base de Prueba", 655335);
 		
-		$("#Crear").bind("click",function (event)
+		$("#Crear").bind("click", function (event)
 		{
-			db.transaction (function(ejecutar)
+			db.transaction (function (ejecutar)
 			{
-				var sql= "CREATE TABLE Clientes (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, nombre VARCHAR(100) NOT NULL, apellido VARCHAR(100) NOT NULL)";
-				ejecutar.executeSql (sql, undefined, function()
+				var sql = "CREATE TABLE Clientes (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, nombre VARCHAR(100) NOT NULL, apellido VARCHAR(100) NOT NULL)";
+				ejecutar.executeSql (sql, undefined, function ()
 				{
-					alert ("Tabla creada");
-				},error);
-				});
-		});
+					alert ("Tabla Creada");
+				}, error);//executesql
+			});//Ejecutar
+		});//crear
 		
-		$("Eliminar").bind("click", function (event)
+		$("#Eliminar").bind("click", function (event)
 		{
-			if (!confirm ("borrar tabla?","")) return;
-			db.transaction(function(transaction)
+			if(!confirm("Borrar tabla?","")) return;
+			db.transaction (function (transaction)
 			{
-				var sql="DROP TABLE Clientes";
-				transaction.executeSql(sql, undefined,function()
+				var sql = "DROP TABLE Clientes";
+				transaction.executeSql (sql, undefined,function ()
 				{
-					alert("Tabla borrada");
-				}, error);
-				});
-		});
+					alert ("Tabla Borrada");
+				}, error);//executesql
+			});//transaction
+		});//Eliminar
 		
-		function error(transaction, err) {
-			alert("error de base de datos : " + err.message);
+		function error (transaction,err){
+			alert ("Error en la base de datos : " +err.message);
 			return false;
-		}
+		}//function error
+		
 		$("#Insertar").bind("click", function (event)
 		{
-			var v_nombre =$("#Nombre").val();
-			var v_apellido =$("#Apellido").val();
-			db.transaction(function(ejecutar)
+			var v_nombre = $("#Nombre").val();
+			var v_apellido = $("#Apellido").val();
+			db.transaction (function (ejecutar)
 			{
-				var sql= "INSET INTO Clientes (nombre, apellido) VALUES (?, ?)";
-				ejecutar.executeSql (sql[v_nombre, v_apellido],function()
+				var sql = "INSERT INTO Clientes (nombre, apellido) VALUES (?, ?)";
+				ejecutar.executeSql (sql, [v_nombre, v_apellido], function ()
 				{
-				alert ("Cliente agregado");
+					alert ("Cliente Agregado");
 				}, error);
-					});
-		});
+			});//ejecutar
+		});//insertar
 		
 		$("#Listar").bind("click", function (event)
 		{
-			db.transaction(function(ejecutar)
+			db.transaction (function (ejecutar)
 			{
-				var sql ="SELECT * FROM Clientes";
-				ejecutar.executeSql(sql, undefined,function(ejecutar, resultado)
+				var sql = "SELECT * FROM Clientes";
+				ejecutar.executeSql (sql, undefined,function (ejecutar, resultado)
 				{
-					var a_html= "<ul>";
+					var a_html = "<ul>";
 					if(resultado.rows.length)
 					{
-						for (var i =0; i < resultado.rows.length; i++)
+						for (var i = 0; i < resultado.rows.length; i++)
 						{
 							var fila = resultado.rows.item (i);
 							
 							var v_nombre = fila.nombre;
 							var v_apellido = fila.apellido;
-							alert(v_nombre);
 							
 							a_html += "<li>" + v_nombre + "&nbsp;" + v_apellido + "</li>";
 						}
-					}
+					}//if
 					else
 					{
-						a_html += "<li> no hay clientes </li>";
-					}
+						a_html += "<li> No hay Clientes </li>";
+					}//else
 					a_html += "</ul>";
 					
-					$("#listado").unbind().bind("pagebeforeshow",function()
+					$("#listado").unbind ().bind ("pagebeforeshow", function ()
 					{
+						//ubicate en el contenido del listado
 						var $contenido = $("#listado div:jqmData(role=content)");
-						$contenido.html(a_html);
-						var $ul = $contenido.find("ul");
+						//agregar <ul> <li>     </li> .... </ul>
+						$contenido.html (a_html);
+						var $ul = $contenido.find ("ul");
+						//En lugar de viñetas salga en forma de lista
 						$ul.listview();
-						});
-						$.mobile.changePage($("#listado"));
-				}, error);
-				});
-				});
-	}, false);
-						
-			
+					});//listado
+					$.mobile.changePage ($("#listado"));
+				}, error);//Resultado
+			});//ejecutar
+		});//listar
 		
-		
-		
-		
-		
-		});
+	}, false);//DeviceReady
+});//Document
